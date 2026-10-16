@@ -31,8 +31,8 @@ Pick one:
 - **From npm** (recommended). Nothing to download by hand: Claude Code starts the server with
   `npx -y zapsign-mcp@1.0.1 <environment>`, which fetches that exact version the first time and reuses it
   after that. The version is pinned on purpose: a new release runs only when you change the number.
-  Every version on [npm](https://www.npmjs.com/package/zapsign-mcp) is published from this repository
-  by GitHub Actions, with provenance that ties it to its commit.
+  Every version on [npm](https://www.npmjs.com/package/zapsign-mcp) from 1.0.1 on is built from this
+  repository by GitHub Actions and goes live only after its maintainer approves it with 2FA.
 - **From source.** Clone the repository and start the server with Node; update it with `git pull`.
 
   ```sh
@@ -230,8 +230,11 @@ server must have a tool for: the Postman collection's, and the ones only the doc
    `npx` commands. The tests fail until all of them agree.
 2. Once it is merged, publish a GitHub release whose tag is `v` and that version, such as `v1.0.1`.
 3. The [`publish`](.github/workflows/publish.yml) workflow checks the tag against the version, runs the
-   tests, publishes to npm through npm's trusted publishing (no token, with provenance) and then lists the
-   version in the [MCP Registry](https://registry.modelcontextprotocol.io).
+   tests and stages the version on npm through npm's trusted publishing (no token).
+4. Approve the staged version on [npmjs.com](https://www.npmjs.com/package/zapsign-mcp) with 2FA. Only
+   then does it go live, and the workflow lists it in the
+   [MCP Registry](https://registry.modelcontextprotocol.io). It waits an hour for the approval; after
+   that, approve and re-run its `mcp-registry` job.
 
 ## License
 
