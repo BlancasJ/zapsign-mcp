@@ -1,6 +1,7 @@
 {
   "name": "zapsign-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "mcpName": "io.github.BlancasJ/zapsign-mcp",
   "description": "An MCP server for ZapSign's API: reads run freely, every write asks first, and the model sees a filtered copy of each answer.",
   "license": "MIT",
   "author": "Jorge Blancas",

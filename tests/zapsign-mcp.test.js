@@ -26,11 +26,18 @@ test('initialize names the server after its environment and offers tools', async
   assert.deepEqual(r.result.capabilities, { tools: {} });
 });
 
-test('the server reports the version of its package, and the package is 1.0.0', async () => {
+test('the server reports the version of its package', async () => {
   const r = await call(quiet(), 'initialize', { protocolVersion: '2025-06-18', capabilities: {} });
+  assert.equal(r.result.serverInfo.version, require('../package.json').version);
+});
+
+// The README pins the version that npx runs, so a release bumps it there too.
+test('every version the README pins is the package\'s, 1.0.1', () => {
   const { version } = require('../package.json');
-  assert.equal(version, '1.0.0');
-  assert.equal(r.result.serverInfo.version, version);
+  const pinned = [...fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8').matchAll(/zapsign-mcp@(\d+\.\d+\.\d+)/g)].map((found) => found[1]);
+  assert.equal(version, '1.0.1');
+  assert.ok(pinned.length > 0);
+  assert.deepEqual([...new Set(pinned)], [version]);
 });
 
 test('a protocol version it does not know is answered with the newest it knows', async () => {
@@ -649,6 +656,24 @@ test('the example settings close the log and ZapSign\'s hosts to the sandbox, an
   assert.deepEqual([...sandbox.network.deniedDomains].sort(), hosts);
   assert.deepEqual(sandbox.filesystem.denyRead, [`~/${path.relative('/h', logRootFor({}, '/h'))}`]);
   for (const host of hosts) assert.ok(SETTINGS.permissions.deny.includes(`WebFetch(domain:${host})`), `WebFetch(domain:${host})`);
+});
+
+// The MCP Registry lists the server from server.json and proves the npm package is its own by
+// the mcpName in package.json; both follow each release.
+test('server.json describes this package, at its version, with the environments and their key variables', () => {
+  const pkg = require('../package.json');
+  const server = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'server.json'), 'utf8'));
+  assert.equal(pkg.mcpName, 'io.github.BlancasJ/zapsign-mcp');
+  assert.equal(server.name, pkg.mcpName);
+  assert.equal(server.version, pkg.version);
+  assert.ok(server.description.length <= 100, `description is ${server.description.length} characters`);
+  assert.equal(server.repository.url, 'https://github.com/BlancasJ/zapsign-mcp');
+  assert.equal(server.packages.length, 1);
+  const [entry] = server.packages;
+  assert.deepEqual([entry.registryType, entry.identifier, entry.version, entry.transport.type], ['npm', pkg.name, pkg.version, 'stdio']);
+  assert.deepEqual(entry.packageArguments.map((argument) => [argument.type, argument.choices]), [['positional', Object.keys(ENVIRONMENTS)]]);
+  assert.deepEqual(entry.environmentVariables.map((variable) => [variable.name, variable.isSecret]),
+    Object.values(ENVIRONMENTS).map((settings) => [settings.variable, true]));
 });
 
 test('every request of the collection and of the documentation has a tool, and every tool is one of them', () => {

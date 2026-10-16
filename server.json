@@ -1,0 +1,45 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.BlancasJ/zapsign-mcp",
+  "title": "ZapSign (unofficial)",
+  "description": "ZapSign e-signature API: reads run freely, writes ask first, personal data filtered out.",
+  "repository": {
+    "url": "https://github.com/BlancasJ/zapsign-mcp",
+    "source": "github"
+  },
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "zapsign-mcp",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "valueHint": "environment",
+          "description": "The ZapSign environment: sandbox, or prod (read-only)",
+          "isRequired": true,
+          "default": "sandbox",
+          "choices": ["sandbox", "prod"]
+        }
+      ],
+      "environmentVariables": [
+        {
+          "name": "ZAPSIGN_SANDBOX_TOKEN",
+          "description": "API token for sandbox. On macOS it can live in the Keychain instead (see the README).",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "ZAPSIGN_PROD_TOKEN",
+          "description": "API token for production. On macOS it can live in the Keychain instead (see the README).",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
