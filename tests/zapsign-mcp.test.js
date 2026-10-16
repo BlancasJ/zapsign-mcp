@@ -26,6 +26,13 @@ test('initialize names the server after its environment and offers tools', async
   assert.deepEqual(r.result.capabilities, { tools: {} });
 });
 
+test('the server reports the version of its package, and the package is 1.0.0', async () => {
+  const r = await call(quiet(), 'initialize', { protocolVersion: '2025-06-18', capabilities: {} });
+  const { version } = require('../package.json');
+  assert.equal(version, '1.0.0');
+  assert.equal(r.result.serverInfo.version, version);
+});
+
 test('a protocol version it does not know is answered with the newest it knows', async () => {
   const r = await call(quiet(), 'initialize', { protocolVersion: '1999-01-01', capabilities: {} });
   assert.equal(r.result.protocolVersion, '2025-06-18');

@@ -1,7 +1,6 @@
 {
   "name": "zapsign-mcp",
-  "version": "2.0.0",
-  "private": true,
+  "version": "1.0.0",
   "description": "An MCP server for ZapSign's API: reads run freely, every write asks first, and the model sees a filtered copy of each answer.",
   "license": "MIT",
   "author": "Jorge Blancas",

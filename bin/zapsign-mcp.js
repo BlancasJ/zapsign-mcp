@@ -36,6 +36,7 @@ const path = require('node:path');
 const readline = require('node:readline');
 // Found next to the real file, also through the link npm puts on the PATH.
 const { filter, filterCsv } = require('../lib/response-filter.js');
+const PACKAGE_VERSION = require('../package.json').version;
 
 const ENVIRONMENTS = {
   sandbox: {
@@ -426,7 +427,7 @@ function createServer({ environment, fetch, readKey, logRoot, now }) {
       return {
         protocolVersion: PROTOCOL_VERSIONS.includes(params.protocolVersion) ? params.protocolVersion : PROTOCOL_VERSIONS[0],
         capabilities: { tools: {} },
-        serverInfo: { name: `zapsign-${environment}`, version: '2.0.0' },
+        serverInfo: { name: `zapsign-${environment}`, version: PACKAGE_VERSION },
       };
     },
     ping: () => ({}),

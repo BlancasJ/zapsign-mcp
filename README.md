@@ -26,15 +26,7 @@ This project is not affiliated with ZapSign. ZapSign publishes its own MCP serve
 
 ## Setup
 
-### 1. Get the code
-
-```sh
-git clone https://github.com/BlancasJ/zapsign-mcp.git ~/zapsign-mcp
-```
-
-Any folder works; the commands below use `~/zapsign-mcp`.
-
-### 2. Give it your token
+### 1. Give it your token
 
 Each environment reads its own variable, `ZAPSIGN_SANDBOX_TOKEN` or `ZAPSIGN_PROD_TOKEN`, and never the
 other's. The token is read when a tool is called, not when the server starts.
@@ -47,24 +39,29 @@ security add-generic-password -s zapsign-mcp-sandbox -a "$USER" -w   # asks for 
 security add-generic-password -s zapsign-mcp-prod -a "$USER" -w      # asks for the production token
 ```
 
-### 3. Add it to Claude Code
+### 2. Add it to Claude Code
 
 One server per environment, named `zapsign-sandbox` and `zapsign-prod` (the permission rules below use
 these names):
 
 ```sh
 # With the token in the Keychain (macOS)
-claude mcp add --scope user zapsign-sandbox -- node ~/zapsign-mcp/bin/zapsign-mcp.js sandbox
-claude mcp add --scope user zapsign-prod -- node ~/zapsign-mcp/bin/zapsign-mcp.js prod
+claude mcp add --scope user zapsign-sandbox -- npx -y zapsign-mcp@1.0.0 sandbox
+claude mcp add --scope user zapsign-prod -- npx -y zapsign-mcp@1.0.0 prod
 
 # With the token in a variable (any system). Claude Code keeps it in ~/.claude.json.
-claude mcp add --scope user zapsign-sandbox -e ZAPSIGN_SANDBOX_TOKEN=your-token -- node ~/zapsign-mcp/bin/zapsign-mcp.js sandbox
+claude mcp add --scope user zapsign-sandbox -e ZAPSIGN_SANDBOX_TOKEN=your-token -- npx -y zapsign-mcp@1.0.0 sandbox
 ```
+
+`npx` downloads the package from npm the first time and reuses it after that. The version is pinned on
+purpose: a new release runs only when you change the number. To run it from a clone instead
+(`git clone https://github.com/BlancasJ/zapsign-mcp.git`), use `node <folder>/bin/zapsign-mcp.js sandbox`
+in place of `npx -y zapsign-mcp@1.0.0 sandbox`.
 
 Writes ask through a mark Claude Code honours (its MCP documentation, "Require approval for a specific
 tool"). In `dontAsk` mode, which never asks, a write is refused instead.
 
-### 4. Add the permission rules and the sandbox
+### 3. Add the permission rules and the sandbox
 
 Merge [`examples/claude-settings.json`](examples/claude-settings.json) into `~/.claude/settings.json`:
 
