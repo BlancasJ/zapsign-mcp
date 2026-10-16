@@ -1,0 +1,23 @@
+{
+  "name": "zapsign-mcp",
+  "version": "2.0.0",
+  "private": true,
+  "description": "An MCP server for ZapSign's API: reads run freely, every write asks first, and the model sees a filtered copy of each answer.",
+  "license": "MIT",
+  "author": "Jorge Blancas",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlancasJ/zapsign-mcp.git"
+  },
+  "keywords": ["mcp", "model-context-protocol", "zapsign", "e-signature", "claude-code"],
+  "bin": {
+    "zapsign-mcp": "bin/zapsign-mcp.js"
+  },
+  "files": ["bin/", "lib/", "examples/"],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/zapsign-mcp.test.js"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__zapsign-sandbox__get_*",
+      "mcp__zapsign-sandbox__list_*",
+      "mcp__zapsign-prod__get_*",
+      "mcp__zapsign-prod__list_*"
+    ],
+    "ask": [
+      "mcp__zapsign-sandbox__add_*",
+      "mcp__zapsign-sandbox__create_*",
+      "mcp__zapsign-sandbox__delete_*",
+      "mcp__zapsign-sandbox__edit_*",
+      "mcp__zapsign-sandbox__place_*",
+      "mcp__zapsign-sandbox__remove_*",
+      "mcp__zapsign-sandbox__reject_*",
+      "mcp__zapsign-sandbox__reorder_*",
+      "mcp__zapsign-sandbox__reprocess_*",
+      "mcp__zapsign-sandbox__resend_*",
+      "mcp__zapsign-sandbox__reset_*",
+      "mcp__zapsign-sandbox__sign_*",
+      "mcp__zapsign-sandbox__update_*",
+      "mcp__zapsign-sandbox__validate_*",
+      "mcp__zapsign-sandbox__write_*",
+      "mcp__zapsign-prod__add_*",
+      "mcp__zapsign-prod__create_*",
+      "mcp__zapsign-prod__delete_*",
+      "mcp__zapsign-prod__edit_*",
+      "mcp__zapsign-prod__place_*",
+      "mcp__zapsign-prod__remove_*",
+      "mcp__zapsign-prod__reject_*",
+      "mcp__zapsign-prod__reorder_*",
+      "mcp__zapsign-prod__reprocess_*",
+      "mcp__zapsign-prod__resend_*",
+      "mcp__zapsign-prod__reset_*",
+      "mcp__zapsign-prod__sign_*",
+      "mcp__zapsign-prod__update_*",
+      "mcp__zapsign-prod__validate_*",
+      "mcp__zapsign-prod__write_*"
+    ],
+    "deny": [
+      "Read(~/.local/state/zapsign-mcp/**)",
+      "WebFetch(domain:api.zapsign.com.br)",
+      "WebFetch(domain:sandbox.api.zapsign.com.br)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": false,
+    "network": {
+      "deniedDomains": ["api.zapsign.com.br", "sandbox.api.zapsign.com.br"]
+    },
+    "filesystem": {
+      "denyRead": ["~/.local/state/zapsign-mcp"]
+    }
+  }
+}
