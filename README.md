@@ -24,6 +24,24 @@ This project is not affiliated with ZapSign. ZapSign publishes its own MCP serve
 - A ZapSign API token for each environment you use: sandbox, production or both
   (ZapSign: Settings → Integration → ZapSign API).
 
+## Install
+
+Pick one:
+
+- **From npm** (recommended). Nothing to download by hand: Claude Code starts the server with
+  `npx -y zapsign-mcp@1.0.1 <environment>`, which fetches that exact version the first time and reuses it
+  after that. The version is pinned on purpose: a new release runs only when you change the number.
+  Every version on [npm](https://www.npmjs.com/package/zapsign-mcp) is published from this repository
+  by GitHub Actions, with provenance that ties it to its commit.
+- **From source.** Clone the repository and start the server with Node; update it with `git pull`.
+
+  ```sh
+  git clone https://github.com/BlancasJ/zapsign-mcp.git ~/zapsign-mcp
+  ```
+
+  Then, in the commands below, use `node ~/zapsign-mcp/bin/zapsign-mcp.js sandbox` in place of
+  `npx -y zapsign-mcp@1.0.1 sandbox`.
+
 ## Setup
 
 ### 1. Give it your token
@@ -46,17 +64,12 @@ these names):
 
 ```sh
 # With the token in the Keychain (macOS)
-claude mcp add --scope user zapsign-sandbox -- npx -y zapsign-mcp@1.0.0 sandbox
-claude mcp add --scope user zapsign-prod -- npx -y zapsign-mcp@1.0.0 prod
+claude mcp add --scope user zapsign-sandbox -- npx -y zapsign-mcp@1.0.1 sandbox
+claude mcp add --scope user zapsign-prod -- npx -y zapsign-mcp@1.0.1 prod
 
 # With the token in a variable (any system). Claude Code keeps it in ~/.claude.json.
-claude mcp add --scope user zapsign-sandbox -e ZAPSIGN_SANDBOX_TOKEN=your-token -- npx -y zapsign-mcp@1.0.0 sandbox
+claude mcp add --scope user zapsign-sandbox -e ZAPSIGN_SANDBOX_TOKEN=your-token -- npx -y zapsign-mcp@1.0.1 sandbox
 ```
-
-`npx` downloads the package from npm the first time and reuses it after that. The version is pinned on
-purpose: a new release runs only when you change the number. To run it from a clone instead
-(`git clone https://github.com/BlancasJ/zapsign-mcp.git`), use `node <folder>/bin/zapsign-mcp.js sandbox`
-in place of `npx -y zapsign-mcp@1.0.0 sandbox`.
 
 Writes ask through a mark Claude Code honours (its MCP documentation, "Require approval for a specific
 tool"). In `dontAsk` mode, which never asks, a write is refused instead.
@@ -210,6 +223,15 @@ npm test
 
 The tests never reach ZapSign or the Keychain. `tests/zapsign-collection.json` lists every request the
 server must have a tool for: the Postman collection's, and the ones only the documentation has.
+
+### Releasing
+
+1. In a pull request, set the new version in `package.json`, in `server.json` (twice) and in the README's
+   `npx` commands. The tests fail until all of them agree.
+2. Once it is merged, publish a GitHub release whose tag is `v` and that version, such as `v1.0.1`.
+3. The [`publish`](.github/workflows/publish.yml) workflow checks the tag against the version, runs the
+   tests, publishes to npm through npm's trusted publishing (no token, with provenance) and then lists the
+   version in the [MCP Registry](https://registry.modelcontextprotocol.io).
 
 ## License
 

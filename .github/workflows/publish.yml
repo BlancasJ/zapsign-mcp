@@ -1,0 +1,55 @@
+name: publish
+
+# A release published on GitHub puts its version on npm, through npm's trusted publishing
+# (no token; provenance is added on its own), and then lists it in the MCP Registry.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+      - name: The release tag is the package's version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          want="v$(node -p 'require("./package.json").version')"
+          [ "$TAG" = "$want" ] || { echo "the release tag is $TAG, package.json says $want"; exit 1; }
+      - run: npm test
+      - run: npm publish
+
+  mcp-registry:
+    needs: npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: Get mcp-publisher 1.8.1, checked against its digest
+        run: |
+          curl -fsSL -o mcp-publisher.tar.gz https://github.com/modelcontextprotocol/registry/releases/download/v1.8.1/mcp-publisher_linux_amd64.tar.gz
+          echo "a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc  mcp-publisher.tar.gz" | sha256sum -c -
+          tar -xzf mcp-publisher.tar.gz mcp-publisher
+      - run: ./mcp-publisher validate
+      - run: ./mcp-publisher login github-oidc
+      - name: Publish to the MCP Registry (npm can take a moment to show a new version)
+        run: |
+          for attempt in 1 2 3 4 5; do
+            ./mcp-publisher publish && exit 0
+            sleep 30
+          done
+          exit 1
